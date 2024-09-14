@@ -1,0 +1,226 @@
+@use 'Variables' as vars;
+
+/* Responsive grid sizes using predefined breakpoints.
+========================================================================== */
+
+@mixin dynamic-width($factor, $property: max-width) {
+  #{$property}: calc(100% / #{vars.$columns} * #{$factor});
+}
+
+@mixin generate-columns-per-breakpoint {
+  @each $name, $value in vars.$breakpoints {
+    @media (min-width: $value) {
+      @for $i from 1 through vars.$columns {
+        &.#{$name}-#{$i} {
+          @include dynamic-width($i);
+        }
+      }
+    }
+  }
+}
+
+// Responsive grid sizes using predefined breakpoints.
+@mixin generate-grid($use-auto: 1, $use-true: 1) {
+  @each $name, $value in vars.$breakpoints {
+    @media (min-width: $value) {
+      @for $i from 1 through vars.$columns {
+        &-#{$name}-#{$i} {
+          flex-grow: 0;
+          @include dynamic-width($i); // Dynamic max-width based on column count.
+          @include dynamic-width($i, flex-basis); // Flex basis matched to max-width.
+        }
+      }
+
+      @if $use-auto != 0 {
+        &-#{$name}-auto {
+          flex-grow: 0;
+          max-width: none;
+          flex-basis: auto;
+        }
+      }
+
+      @if $use-true != 0 {
+        &-#{$name}-true {
+          flex-grow: 1;
+          max-width: 100%;
+          flex-basis: 0;
+        }
+      }
+    }
+  }
+}
+
+
+/* Dark Mode support
+========================================================================== */
+@mixin dark-mode() {
+  @media (prefers-color-scheme: dark) {
+    @content;
+  }
+}
+
+/* Border Radius
+========================================================================== */
+
+@mixin border-radius($prop) {
+  border-radius: $prop;
+}
+
+@mixin border-top-radius($radius) {
+  border-top-right-radius: $radius;
+  border-top-left-radius: $radius;
+  background-clip: padding-box;
+}
+
+@mixin border-right-radius($radius) {
+  border-bottom-right-radius: $radius;
+  border-top-right-radius: $radius;
+  background-clip: padding-box;
+}
+
+@mixin border-bottom-radius($radius) {
+  border-bottom-right-radius: $radius;
+  border-bottom-left-radius: $radius;
+  background-clip: padding-box;
+}
+
+@mixin border-left-radius($radius) {
+  border-bottom-left-radius: $radius;
+  border-top-left-radius: $radius;
+  background-clip: padding-box;
+}
+
+/* Shadows
+========================================================================== */
+
+@mixin box-shadow($top, $left, $blur, $color, $inset: false) {
+  @if $inset {
+    box-shadow: inset $top $left $blur $color;
+  }
+  @else {
+    box-shadow: $top $left $blur $color;
+  }
+}
+
+@mixin transition($prop: all, $animspeed: 0.2s) {
+  transition: $prop;
+  transition-duration: $animspeed;
+  transition-timing-function: cubic-bezier(0.34, 0.01, 0.27, 1);
+  transform-style: preserve-3d;
+}
+
+@mixin animation( $animation, $timing: cubic-bezier(0.2, 0.58, 0.47, 0.97), $delay: 0s ) {
+  animation: $animation;
+  animation-timing-function: $timing;
+  animation-delay: $delay;
+}
+
+@mixin keyframes($animationName) {
+  @keyframes #{$animationName} {
+    @content;
+  }
+}
+
+@mixin disable-highlight() {
+  user-select: none;
+}
+
+@mixin translatez($z: 0) {
+  transform: translateZ($z);
+}
+
+@mixin transform($value) {
+  -webkit-transform: $value;
+  -moz-transform: $value;
+  -ms-transform: $value;
+  -o-transform: $value;
+  transform: $value;
+}
+
+@mixin transform-origin($x: 0, $y: 0) {
+  -webkit-transform-origin: $x $y;
+  -moz-transform-origin: $x $y;
+  -ms-transform-origin: $x $y;
+  -o-transform-origin: $x $y;
+  transform-origin: $x $y;
+}
+
+/* Shimmer effect
+========================================================================== */
+
+@mixin loading() {
+  &.loading {
+    > &-header {
+      height: 38px;
+      width: 38px;
+      margin: 20px 5px 0 0;
+      @include border-radius(4px);
+      @include shimmer();
+    }
+
+    > &-media {
+      height: 38px;
+      width: 70%;
+      margin-top: 20px;
+      @include border-radius(4px);
+      @include shimmer(3s);
+    }
+
+    > &-content {
+      height: 30px;
+      width: 70%;
+      margin: 0 0 10px 0;
+      @include border-radius(5px);
+      @include shimmer(3s);
+    }
+
+    > &-actions {
+      height: 30px;
+      width: 35%;
+      @include border-radius(5px);
+      @include shimmer(2s);
+    }
+  }
+}
+
+@mixin shimmer($duration: 1s) {
+  @include dark-mode {
+    background: lighten(var(--mud-palette-background), 3%);
+    background-image: linear-gradient( to right, lighten(var(--mud-palette-background), 3%) 0%,
+        lighten(lighten(var(--mud-palette-background), 3%), 8%) 20%,
+        lighten(var(--mud-palette-background), 3%) 40%,
+        lighten(var(--mud-palette-background), 3%) 100% );
+  }
+
+  background: darken(var(--mud-palette-background), 3%);
+  background-image: linear-gradient( to right, darken(var(--mud-palette-background), 3%) 0%, darken(darken(var(--mud-palette-background), 3%), 8%) 20%, darken(var(--mud-palette-background), 3%) 40%, darken(var(--mud-palette-background), 3%) 100% );
+  background-repeat: no-repeat;
+  background-size: 200% 100%;
+  display: inline-block;
+  position: relative;
+  @include animation( $duration linear 0s infinite normal forwards running shimmerAnimation );
+
+  @include keyframes(shimmerAnimation) {
+    0% {
+      background-position-x: 100%;
+    }
+
+    100% {
+      background-position-x: -100%;
+    }
+  }
+}
+
+/* Extras
+========================================================================== */
+
+@mixin svg-background($url) {
+  -webkit-mask: url(#{$url}) no-repeat 50% 50%;
+  mask: url(#{$url}) no-repeat 50% 50%;
+  -webkit-mask-size: cover;
+  mask-size: cover;
+}
+
+@mixin small-text {
+  font-size: 0.75rem;
+}

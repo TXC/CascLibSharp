@@ -1,0 +1,5 @@
+{
+  "SourceFolder": "Styles/App.scss",
+  "TargetFolder": "wwwroot/css/app.min.css",
+  "Arguments": "--style=compressed --no-source-map"
+}

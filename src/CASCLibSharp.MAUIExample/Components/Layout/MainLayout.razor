@@ -1,0 +1,74 @@
+﻿@inherits LayoutComponentBase
+@using MudBlazor
+
+<MudThemeProvider @ref="@provider"
+                  @bind-IsDarkMode="@useDarkMode"
+                  Theme="CustomTheme" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="0">
+        <MudText Typo="Typo.h6">MyApplication</MudText>
+        <MudSpacer />
+    </MudAppBar>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-5 pt-5">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool useDarkMode;
+    private MudThemeProvider provider = null!;
+
+    MudTheme CustomTheme = new MudTheme()
+        {
+            /*
+            PaletteLight = new PaletteLight()
+            {
+                Primary = new MudBlazor.Utilities.MudColor("#18092f"),
+                DrawerBackground = new MudBlazor.Utilities.MudColor("#18092f"),
+                AppbarBackground = new MudBlazor.Utilities.MudColor("#ffffff"),
+
+                ActionDefault = new MudBlazor.Utilities.MudColor("#27272f"),
+
+                DrawerText = new MudBlazor.Utilities.MudColor("#ffffff"),
+                //DrawerIcon = new MudBlazor.Utilities.MudColor("#18092f"),
+                //DrawerIcon = new MudBlazor.Utilities.MudColor("#594AE2"),
+                DrawerIcon = new MudBlazor.Utilities.MudColor("#ffffff"),
+                Divider = new MudBlazor.Utilities.MudColor("#18092f").ChangeLightness(.15),
+            },
+            LayoutProperties = new LayoutProperties()
+            {
+                DrawerWidthLeft = "150px"
+            },
+            */
+            Typography = new Typography()
+            {
+                Default = new Default()
+                {
+                    FontFamily = new[] { "OpenSansRegular", "Helvetica", "Arial", "sans-serif" }
+                }
+            }
+        };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            useDarkMode = await provider.GetSystemPreference();
+            await provider.WatchSystemPreference(OnSystemPreferenceChanged);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private Task OnSystemPreferenceChanged(bool newValue)
+    {
+        useDarkMode = newValue;
+        this.StateHasChanged();
+        return Task.CompletedTask;
+    }
+}

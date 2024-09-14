@@ -1,0 +1,105 @@
+﻿@page "/"
+@using System.Collections.ObjectModel
+@using Microsoft.Maui.Storage
+@using CommunityToolkit.Maui
+@using CommunityToolkit.Maui.Storage
+@using MudBlazor
+@using CASCLibSharp.MAUIExample
+@using CASCLibSharp
+
+@namespace CASCLibSharp.MAUIExample.Components.Pages
+
+@inject IFolderPicker folderPicker
+@inject IFileSaver fileSaver
+@inject IFilePicker filePicker
+@inject ISnackbar Snackbar
+
+@if (ShowProgress)
+{
+    <DisplayProgress @ref="progress" />
+}
+
+<MudDataGrid T="CASCFileInfo"
+             @ref="mudDataGrid"
+             VirtualizeServerData="ServerDataFunc"
+             SelectedItemsChanged="@SelectedItemsChanged"
+             Height="calc(100vh - 230px)"
+             ItemSize="41f"
+             SortMode="SortMode.Multiple"
+             Bordered="false"
+             Virtualize
+             Filterable
+             FixedHeader
+             Striped
+             MultiSelection
+             Hideable>
+    <Columns>
+        <SelectColumn T="CASCFileInfo" />
+
+        <PropertyColumn Property="x => x.FilePath"
+                        Title="Filepath" />
+
+        <PropertyColumn Property="x => x.FileName"
+                        Title="Filename" />
+
+        <TemplateColumn Property="x => x.FileName"
+                        Title="Mime">
+            <CellTemplate>
+                TryGetContentType(fileName, out contentType)
+                @context.Item.FileName
+            </CellTemplate>
+        </TemplateColumn>
+
+        <PropertyColumn Property="x => x.FileSize"
+                        HeaderStyle="width: 135px"
+                        Title="Size">
+            <CellTemplate>
+                @context.Item.FileSize.SizeSuffix()
+            </CellTemplate>
+        </PropertyColumn>
+
+        <PropertyColumn Property="x => x.IsLocal"
+                        Title="Is local"
+                        HeaderStyle="width: 155px"
+                        CellStyle="text-align: center">
+            <CellTemplate>
+                <BoolIcon Value="@context.Item.IsLocal" />
+            </CellTemplate>
+        </PropertyColumn>
+        @*
+        <PropertyColumn Property="x => x.CKey"
+                        Title="Content Key"
+                        Hidden />
+        <PropertyColumn Property="x => x.EKey"
+                        Title="Encoded Key"
+                        Hidden />
+        *@
+    </Columns>
+</MudDataGrid>
+
+<MudStack Class="mt-4" Row>
+    <MudButton Color="Color.Primary"
+               Variant="Variant.Outlined"
+               Disabled="@(Storage is not null)"
+               OnClick="@OpenStorageClick">
+        Open Storage
+    </MudButton>
+    <MudButton Color="Color.Primary"
+               Variant="Variant.Outlined"
+               Disabled="@(SelectedItems.Count <= 0)"
+               OnClick="@ExtractSelectedClick">
+        @(SelectedItems.Count > 2 ? "Extract Selected Files" : "Extract Selected File")
+    </MudButton>
+    <MudButton Color="Color.Primary"
+               Variant="Variant.Outlined"
+               Disabled="@(Storage?.Files.Count() <= 0)"
+               OnClick="@ExtractAllClick">
+        Extract All Files
+    </MudButton>
+    <MudButton Color="Color.Primary"
+               Variant="Variant.Outlined"
+               Disabled="@(Storage is null)"
+               OnClick="@CloseStorageClick">
+        Close Storage
+    </MudButton>
+</MudStack>

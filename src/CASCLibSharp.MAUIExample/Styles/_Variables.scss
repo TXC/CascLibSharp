@@ -1,0 +1,7 @@
+@use "sass:map";
+
+$breakpoints: ("xs": 0px, "sm": 600px, "md": 960px, "lg": 1280px, "xl": 1920px, "xxl": 2560px);
+$columns: 12;
+
+//$font-family: OpenSansRegular, Helvetica, Arial, sans-serif;
+$font-family: "Avenir", Helvetica, Arial, sans-serif;

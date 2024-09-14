@@ -1,0 +1,91 @@
+﻿@using MudBlazor
+
+<MudCard>
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">@Message</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudProgressLinear @ref="progress"
+                           Color="Color.Dark"
+                           Min="@Minimum"
+                           Max="@Maximum"
+                           Value="@Value" />
+
+        <MudProgressLinear @ref="totalProgress"
+                           Color="Color.Dark"
+                           Min="@TotalMinimum"
+                           Max="@TotalMaximum"
+                           Value="@TotalValue" />
+    </MudCardContent>
+    <MudCardActions>
+        <MudSpacer />
+        <MudButton OnClick="@Abort">
+            Cancel
+        </MudButton>
+    </MudCardActions>
+</MudCard>
+
+
+@code {
+    double TotalValue { get; set; } = 0;
+    double TotalMinimum { get; set; } = 0;
+    double TotalMaximum { get; set; } = 100;
+
+    double Value { get; set; } = 0;
+    double Minimum { get; set; } = 0;
+    double Maximum { get; set; } = 100;
+
+    string Message { get; set; } = string.Empty;
+
+    MudProgressLinear totalProgress = null!;
+    MudProgressLinear progress = null!;
+
+    bool IsAborted { get; set; } = false;
+
+    void Abort()
+    {
+        IsAborted = true;
+    }
+
+    public void SetProgressCount(double value)
+    {
+        Maximum = value;
+        Value = 0;
+    }
+    public bool IncrementProgress()
+    {
+        Value++;
+        return IsAborted;
+    }
+    public bool DecrementProgress()
+    {
+        Value--;
+        return IsAborted;
+    }
+
+    public void SetTotalProgressCount(double value)
+    {
+        TotalMaximum = value;
+        TotalValue = 0;
+    }
+    public bool IncrementTotalProgress()
+    {
+        TotalValue++;
+        return IsAborted;
+    }
+    public bool DecrementTotalProgress()
+    {
+        TotalValue--;
+        return IsAborted;
+    }
+
+
+    public void SetMessage(string value) => Message = value;
+
+    public void Complete() {
+        Value = Maximum;
+        IsAborted = true;
+    }
+}

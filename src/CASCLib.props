@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Choose>
+    <When Condition="'$(Configuration)' == 'Debug'">
+      <PropertyGroup>
+        <_ConfigType>D</_ConfigType>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(Configuration)' == 'Release'">
+      <PropertyGroup>
+        <_ConfigType>R</_ConfigType>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <_ConfigType>X</_ConfigType>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(CharacterSet)' == 'MultiByte'">
+      <PropertyGroup>
+        <_CSet>A</_CSet>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(CharacterSet)' == 'Unicode'">
+      <PropertyGroup>
+        <_CSet>U</_CSet>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <_CSet>Y</_CSet>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(ConfigurationType)' == 'DynamicLibrary'">
+      <PropertyGroup>
+        <_CRT>D</_CRT>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(ConfigurationType)' == 'StaticLibrary'">
+      <PropertyGroup>
+        <_CRT>S</_CRT>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <_CRT>Z</_CRT>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <PropertyGroup>
+	<!--_CASCLibRoot>$(MSBuildThisFileDirectory)\..\..\CascLib</_CASCLibRoot-->
+    <CASCName>$(MSBuildProjectName)$(_ConfigType)$(_CSet)$(_CRT)</CASCName>
+	<CASCIncludePath>"$(_CASCLibRoot)\src"</CASCIncludePath>
+	<CASCLibraryPath>"$(_CASCLibRoot)\bin\$(Platform)\$(Configuration)$(_CSet)$(_CRT)"</CASCLibraryPath>
+	<CASCLibraryPaths>"$(_CASCLibRoot)\bin\$(Platform)\$(Configuration)AD";"$(_CASCLibRoot)\bin\$(Platform)\$(Configuration)AS";"$(_CASCLibRoot)\bin\$(Platform)\$(Configuration)UD";"$(_CASCLibRoot)\bin\$(Platform)\$(Configuration)US"</CASCLibraryPaths>
+  </PropertyGroup>
+
+</Project>

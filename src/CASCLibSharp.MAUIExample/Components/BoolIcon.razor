@@ -1,0 +1,36 @@
+﻿@using Microsoft.AspNetCore.Components
+@using Microsoft.Extensions.Localization
+@using MudBlazor
+
+<MudIcon Icon="@AsIcon" Color="@AsColor" />
+
+@code {
+    [Parameter, EditorRequired] public bool? Value { get; set; }
+    [Parameter] public string? Text { get; set; } = string.Empty;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private string AsIcon
+    {
+        get
+        {
+            if (Value == true)
+            {
+                return Icons.Material.Filled.Done;
+            }
+            return Icons.Material.Filled.Clear;
+        }
+    }
+
+    private Color AsColor
+    {
+        get
+        {
+            if (Value == true)
+            {
+                return Color.Success;
+            }
+            return Color.Error;
+        }
+    }
+
+}

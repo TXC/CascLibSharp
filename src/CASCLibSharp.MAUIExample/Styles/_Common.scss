@@ -1,0 +1,73 @@
+@use 'Mixins';
+@use 'Variables' as vars;
+
+%table-root {
+  width: 100%;
+  border-spacing: 0;
+}
+
+%table-head {
+  display: table-header-group;
+}
+
+%table-head-cell {
+  color: var(--mud-palette-text-primary);
+  font-weight: 500;
+  line-height: 1.5rem;
+}
+
+%table-body {
+  display: table-row-group;
+}
+
+%table-row {
+  color: inherit;
+  display: table-row;
+  outline: 0;
+  vertical-align: middle;
+}
+
+%table-cell {
+  display: table-cell;
+  //padding: 16px;
+  padding: 8px;
+  font-size: .875rem;
+  text-align: start;
+  font-weight: 400;
+  line-height: 1.43;
+  border-bottom: 1px solid var(--mud-palette-table-lines);
+  letter-spacing: .01071em;
+  vertical-align: inherit;
+}
+
+%table-foot {
+}
+
+.mud-table-root {
+    @extend %table-root;
+
+    .mud-table-head {
+        @extend %table-head;
+
+        .mud-table-cell {
+            @extend %table-cell;
+            @extend %table-head-cell;
+        }
+    }
+
+    .mud-table-body {
+        @extend %table-body;
+
+        .mud-table-row {
+            @extend %table-row;
+
+            .mud-table-cell {
+                @extend %table-cell;
+            }
+        }
+    }
+
+    .mud-table-foot {
+        @extend %table-foot;
+    }
+}
